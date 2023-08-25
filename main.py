@@ -5,6 +5,9 @@ import events
 from events import Events
 from colors import *
 from config import *
+from config_spaceship import *
+
+
 
 pygame.init()
 
@@ -19,9 +22,10 @@ spaceship_image = pygame.image.load('images/spaceship.png')
 
 
 while event.running:
+    pygame.display.flip()
     event.process()
     screen.blit(background_image,(0,0))
-    screen.blit(spaceship_image,(20,100))
-    pygame.display.flip()
+    screen.blit(spaceship_image,(shipY,shipX))
+
 
     clock.tick(FPS)
