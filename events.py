@@ -13,3 +13,4 @@ class Events:
             elif event.type == pygame.KEYDOWN:
                 if event.key ==  pygame.K_s:
                     shipY+=speed
+                    
