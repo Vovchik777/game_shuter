@@ -14,9 +14,10 @@ screen = pygame.display.set_mode((WIDHT, HEIGHT))
 pygame.display.set_caption("шутер")
 clock = pygame.time.Clock()
 
-pygame.display.flip()
+background_image = pygame.image.load('images/fon.jpg')
 
 
 while event.running:
     event.process()
-
+    screen.blit(background_image,(0,0))
+    pygame.display.flip()
