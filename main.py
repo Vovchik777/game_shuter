@@ -17,7 +17,6 @@ bulletY = shipY / 2
 bulletspeed = 20
 
 pygame.init()
-
 event = Events()
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -34,21 +33,23 @@ running = True
 #     pass
 
 
-bullets = []#pygame.sprite.Group()
+bullets = []  # pygame.sprite.Group()
 asteroids = []
-
 
 asteroidspeed = 10
 
-def asteroid(image, x , y):
+
+def asteroid(image, x, y):
     global asteroids
     asteroid = [image, x, y]
     asteroids.append(asteroid)
+
 
 def shot(image, x, y):
     global bullets
     bullet = [image, x, y]
     bullets.append(bullet)
+
 
 t = time.time()
 while running:  # event.running:
@@ -60,18 +61,21 @@ while running:  # event.running:
     clock.tick(FPS)
 
     for a in asteroids:
-        a[1]-=asteroidspeed
-        screen.blit(a[0],(a[1],a[2]))
-    asteroids = list(filter(lambda a: a[1] < WIDTH, asteroids))
+        a[1] -= asteroidspeed
+        screen.blit(a[0], (a[1], a[2]))
+        if a[1] <= 0 :#WIDTH:
+            running = False
+
+    # asteroids = list(filter(lambda a: a[1] < WIDTH, asteroids))
     for b in bullets:
-        b[1]+=bulletspeed
-        screen.blit(b[0],(b[1],b[2]))
-    bullets = list(filter(lambda a: a[1]   < WIDTH,bullets))
+        b[1] += bulletspeed
+        screen.blit(b[0], (b[1], b[2]))
+    bullets = list(filter(lambda a: a[1] < WIDTH, bullets))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
+            break
     if pygame.key.get_pressed()[pygame.K_s]:
         if shipY < HEIGHT - 34:
             shipY += speed
@@ -79,10 +83,26 @@ while running:  # event.running:
         if shipY > 0:
             shipY -= speed
     if pygame.key.get_pressed()[pygame.K_SPACE]:
-        shot(bullet_image,shipX+60,shipY+16)
+        shot(bullet_image, shipX + 60, shipY + 16)
     if time.time() - t >= 1.0:
         t = time.time()
-        asteroid(asteroid_image,WIDTH,random.randint(0, HEIGHT-30))
+        asteroid(asteroid_image, WIDTH, random.randint(0, HEIGHT - 30))
+defeat_screen = pygame.display.set_mode((600, 600))
+pygame.display.set_caption('Вы проиграли!')
+f = pygame.font.SysFont('arial', 24)
+sc_text = f.render('Вы проиграли!', 1, RED, BLUE)
+pos = sc_text.get_rect(center=(600 // 2, 600 // 2))
+
+defeat_screen.fill(WHITE)
+defeat_screen.blit(sc_text, pos)
+pygame.display.update()
+defeat = True
+while defeat:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            defeat = False
+        elif event.type == pygame.KEYDOWN:
+            defeat = False
 
         # screen.blit(bullet_image,(bulletX,bulletY))
         # bulletX+=bulletspeed
