@@ -10,7 +10,7 @@ from config_spaceship import *
 
 shipX = 20
 shipY = 10
-speed = 10
+speed = 20
 
 bulletX = shipX + 34
 bulletY = shipY / 2
@@ -35,16 +35,15 @@ running = True
 
 
 bullets = []#pygame.sprite.Group()
+asteroids = []
 
 
-asteroidspeed = 50
+asteroidspeed = 10
 
-def asteroid():
-    global HEIGHT,asteroid_image,screen,asteroidspeed
-    coordY=random.randint(0,HEIGHT)
-    coordX = WIDTH
-    screen.blit(asteroid_image,(coordX-100,coordY))
-    coordX-=asteroidspeed
+def asteroid(image, x , y):
+    global asteroids
+    asteroid = [image, x, y]
+    asteroids.append(asteroid)
 
 def shot(image, x, y):
     global bullets
@@ -60,7 +59,10 @@ while running:  # event.running:
     screen.blit(spaceship_image, (shipX, shipY))
     clock.tick(FPS)
 
-
+    for a in asteroids:
+        a[1]-=asteroidspeed
+        screen.blit(a[0],(a[1],a[2]))
+    asteroids = list(filter(lambda a: a[1] < WIDTH, asteroids))
     for b in bullets:
         b[1]+=bulletspeed
         screen.blit(b[0],(b[1],b[2]))
@@ -78,9 +80,9 @@ while running:  # event.running:
             shipY -= speed
     if pygame.key.get_pressed()[pygame.K_SPACE]:
         shot(bullet_image,shipX+60,shipY+16)
-    if time.time() - t >= 4.0:
+    if time.time() - t >= 1.0:
         t = time.time()
-        asteroid()
+        asteroid(asteroid_image,WIDTH,random.randint(0, HEIGHT-30))
 
         # screen.blit(bullet_image,(bulletX,bulletY))
         # bulletX+=bulletspeed

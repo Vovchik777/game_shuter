@@ -1,3 +1,3 @@
 WIDTH = 800
 HEIGHT = 600
-FPS = 1
+FPS = 30
