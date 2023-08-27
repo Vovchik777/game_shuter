@@ -10,7 +10,7 @@ from config_spaceship import *
 
 shipX = 20
 shipY = 10
-speed = 20
+speed = 10
 
 asteroidudar = []
 
@@ -40,8 +40,10 @@ running = True
 bullets = []  # pygame.sprite.Group()
 asteroids = []
 
-asteroidspeed = 10
+asteroidspeed = 5
 
+
+counterb = len(bulletcounter)
 
 def asteroid(image, x, y):
     global asteroids
@@ -55,9 +57,14 @@ def shot(image, x, y):
     bullets.append(bullet)
     bulletcounter.append('1')
 
+
 t = time.time()
 while running:  # event.running:
-
+    bullets_left = 100 - len(bulletcounter)
+    f = pygame.font.SysFont('arial', 10)
+    sc_text = f.render(f'Пуль осталось: {bullets_left}', 1, RED)  # , BLUE)
+    pos = sc_text.get_rect(center=(WIDTH//2,HEIGHT//2))
+    screen.blit(sc_text,pos)
     pygame.display.flip()
     # event.process()
     screen.blit(background_image, (0, 0))
@@ -70,10 +77,9 @@ while running:  # event.running:
         if a[1] <= 0:  # WIDTH:
             asteroids = list(filter(lambda a: a[1] < 0, asteroids))
             asteroidudar.append('1')
-            print(asteroidudar)
+            bulletcounter.clear()
             counter = len(asteroidudar)
-            print(counter)
-            if counter == 3: #len(asteroidudar) == 3:
+            if counter == 3:  # len(asteroidudar) == 3:
                 running = False
 
     # asteroids = list(filter(lambda a: a[1] < WIDTH, asteroids))
@@ -94,22 +100,25 @@ while running:  # event.running:
             shipY -= speed
     if pygame.key.get_pressed()[pygame.K_SPACE]:
         counterb = len(bulletcounter)
-        if counterb < 50:
+        if counterb < 100:
             shot(bullet_image, shipX + 60, shipY + 16)
     for a in asteroids:
         for b in bullets:
-            hits = pygame.sprite.spritecollide(b[0],a[0],True)
-            # if b[1]+10 == a[1]:
-            #     asteroids.remove(a)
-            #     bullets.remove(b)
-            #     print('попал')
+            if a[1] <= b[1] + 10 <= a[1] + 30 and a[2] <= b[2] <= a[2] + 30:
+                asteroids.remove(a)
+                bullets.remove(b)
+                print('до удаления 3 пуль: ',len(bulletcounter))
+                bulletcounter = bulletcounter[0 :-3]
+                print('-3 пули: ',len(bulletcounter) )
+                print('попал')
+
     if time.time() - t >= 1.0:
         t = time.time()
         asteroid(asteroid_image, WIDTH, random.randint(0, HEIGHT - 30))
 defeat_screen = pygame.display.set_mode((600, 600))
 pygame.display.set_caption('Вы проиграли!')
 f = pygame.font.SysFont('arial', 24)
-sc_text = f.render('Вы проиграли!', 1, RED)#, BLUE)
+sc_text = f.render('Вы проиграли!', 1, RED)  # , BLUE)
 pos = sc_text.get_rect(center=(600 // 2, 600 // 2))
 
 defeat_screen.fill(WHITE)
