@@ -12,9 +12,13 @@ shipX = 20
 shipY = 10
 speed = 20
 
+asteroidudar = []
+
 bulletX = shipX + 34
 bulletY = shipY / 2
 bulletspeed = 20
+
+bulletcounter = []
 
 pygame.init()
 event = Events()
@@ -49,7 +53,7 @@ def shot(image, x, y):
     global bullets
     bullet = [image, x, y]
     bullets.append(bullet)
-
+    bulletcounter.append('1')
 
 t = time.time()
 while running:  # event.running:
@@ -63,8 +67,14 @@ while running:  # event.running:
     for a in asteroids:
         a[1] -= asteroidspeed
         screen.blit(a[0], (a[1], a[2]))
-        if a[1] <= 0 :#WIDTH:
-            running = False
+        if a[1] <= 0:  # WIDTH:
+            asteroids = list(filter(lambda a: a[1] < 0, asteroids))
+            asteroidudar.append('1')
+            print(asteroidudar)
+            counter = len(asteroidudar)
+            print(counter)
+            if counter == 3: #len(asteroidudar) == 3:
+                running = False
 
     # asteroids = list(filter(lambda a: a[1] < WIDTH, asteroids))
     for b in bullets:
@@ -75,7 +85,7 @@ while running:  # event.running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-            break
+            exit()
     if pygame.key.get_pressed()[pygame.K_s]:
         if shipY < HEIGHT - 34:
             shipY += speed
@@ -83,14 +93,23 @@ while running:  # event.running:
         if shipY > 0:
             shipY -= speed
     if pygame.key.get_pressed()[pygame.K_SPACE]:
-        shot(bullet_image, shipX + 60, shipY + 16)
+        counterb = len(bulletcounter)
+        if counterb < 50:
+            shot(bullet_image, shipX + 60, shipY + 16)
+    for a in asteroids:
+        for b in bullets:
+            hits = pygame.sprite.spritecollide(b[0],a[0],True)
+            # if b[1]+10 == a[1]:
+            #     asteroids.remove(a)
+            #     bullets.remove(b)
+            #     print('попал')
     if time.time() - t >= 1.0:
         t = time.time()
         asteroid(asteroid_image, WIDTH, random.randint(0, HEIGHT - 30))
 defeat_screen = pygame.display.set_mode((600, 600))
 pygame.display.set_caption('Вы проиграли!')
 f = pygame.font.SysFont('arial', 24)
-sc_text = f.render('Вы проиграли!', 1, RED, BLUE)
+sc_text = f.render('Вы проиграли!', 1, RED)#, BLUE)
 pos = sc_text.get_rect(center=(600 // 2, 600 // 2))
 
 defeat_screen.fill(WHITE)
