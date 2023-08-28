@@ -42,8 +42,8 @@ asteroids = []
 
 asteroidspeed = 5
 
-
 counterb = len(bulletcounter)
+
 
 def asteroid(image, x, y):
     global asteroids
@@ -63,8 +63,8 @@ while running:  # event.running:
     bullets_left = 100 - len(bulletcounter)
     f = pygame.font.SysFont('arial', 10)
     sc_text = f.render(f'Пуль осталось: {bullets_left}', 1, RED)  # , BLUE)
-    pos = sc_text.get_rect(center=(WIDTH//2,HEIGHT//2))
-    screen.blit(sc_text,pos)
+    pos = sc_text.get_rect(center=(750, 590))
+    screen.blit(sc_text, pos)
     pygame.display.flip()
     # event.process()
     screen.blit(background_image, (0, 0))
@@ -107,11 +107,11 @@ while running:  # event.running:
             if a[1] <= b[1] + 10 <= a[1] + 30 and a[2] <= b[2] <= a[2] + 30:
                 asteroids.remove(a)
                 bullets.remove(b)
-                print('до удаления 3 пуль: ',len(bulletcounter))
-                bulletcounter = bulletcounter[0 :-3]
-                print('-3 пули: ',len(bulletcounter) )
-                print('попал')
-
+                a = random.randint(1, 2)
+                if a == 1:
+                    counterb = bulletcounter[0:-10]
+                else:
+                    counterb = bulletcounter[0:-3]
     if time.time() - t >= 1.0:
         t = time.time()
         asteroid(asteroid_image, WIDTH, random.randint(0, HEIGHT - 30))
