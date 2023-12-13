@@ -2,26 +2,22 @@ import random
 import time
 
 import pygame
-import events
-from events import Events
 from colors import *
 from config import *
-from config_spaceship import *
 
 shipX = 20
 shipY = 10
 speed = 10
 
-asteroidudar = []
-
+asteroidudar = 0
+bullets_left = 100
 bulletX = shipX + 34
 bulletY = shipY / 2
 bulletspeed = 20
 
-bulletcounter = []
+bullets_left = 100
 
 pygame.init()
-event = Events()
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("шутер")
@@ -42,8 +38,6 @@ asteroids = []
 
 asteroidspeed = 5
 
-counterb = len(bulletcounter)
-
 
 def asteroid(image, x, y):
     global asteroids
@@ -52,18 +46,17 @@ def asteroid(image, x, y):
 
 
 def shot(image, x, y):
-    global bullets
+    global bullets,bullets_left
     bullet = [image, x, y]
     bullets.append(bullet)
-    bulletcounter.append('1')
+    bullets_left -= 1
 
 
 t = time.time()
 while running:  # event.running:
-    bullets_left = 100 - len(bulletcounter)
-    f = pygame.font.SysFont('arial', 10)
+    f = pygame.font.SysFont('arial', 25)
     sc_text = f.render(f'Пуль осталось: {bullets_left}', 1, RED)  # , BLUE)
-    pos = sc_text.get_rect(center=(750, 590))
+    pos = sc_text.get_rect(center = (WIDTH-200,HEIGHT - 30))
     screen.blit(sc_text, pos)
     pygame.display.flip()
     # event.process()
@@ -76,10 +69,9 @@ while running:  # event.running:
         screen.blit(a[0], (a[1], a[2]))
         if a[1] <= 0:  # WIDTH:
             asteroids = list(filter(lambda a: a[1] < 0, asteroids))
-            asteroidudar.append('1')
-            bulletcounter.clear()
-            counter = len(asteroidudar)
-            if counter == 3:  # len(asteroidudar) == 3:
+            asteroidudar += 1
+            bullets_left = 100
+            if asteroidudar == 3:  # len(asteroidudar) == 3:
                 running = False
 
     # asteroids = list(filter(lambda a: a[1] < WIDTH, asteroids))
@@ -99,19 +91,14 @@ while running:  # event.running:
         if shipY > 0:
             shipY -= speed
     if pygame.key.get_pressed()[pygame.K_SPACE]:
-        counterb = len(bulletcounter)
-        if counterb < 100:
+        if bullets_left > 0:
             shot(bullet_image, shipX + 60, shipY + 16)
     for a in asteroids:
         for b in bullets:
             if a[1] <= b[1] + 10 <= a[1] + 30 and a[2] <= b[2] <= a[2] + 30:
                 asteroids.remove(a)
                 bullets.remove(b)
-                a = random.randint(1, 2)
-                if a == 1:
-                    counterb = bulletcounter[0:-10]
-                else:
-                    counterb = bulletcounter[0:-3]
+                bullets_left += 7
     if time.time() - t >= 1.0:
         t = time.time()
         asteroid(asteroid_image, WIDTH, random.randint(0, HEIGHT - 30))
@@ -121,7 +108,7 @@ f = pygame.font.SysFont('arial', 24)
 sc_text = f.render('Вы проиграли!', 1, RED)  # , BLUE)
 pos = sc_text.get_rect(center=(600 // 2, 600 // 2))
 
-defeat_screen.fill(WHITE)
+defeat_screen.fill(BLUE)
 defeat_screen.blit(sc_text, pos)
 pygame.display.update()
 defeat = True
